@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 """
-    Lockboxes algorithm : can you open all box or not ?
+    commented function
 """
 
 def island_perimeter(grid):
+    """commented function """
+    
     # Initialize the perimeter count
     perimeter = 0
     
