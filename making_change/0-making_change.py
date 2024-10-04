@@ -4,7 +4,7 @@
 """
 
 def makeChange(coins, total):
-"""commented function"""
+    """commented function"""
     # If total is 0, no coins are needed
     if total == 0:
         return 0
