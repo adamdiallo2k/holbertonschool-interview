@@ -1,4 +1,11 @@
+#!/usr/bin/python3
+"""
+    commented function
+"""
+
 def makeChange(coins, total):
+    
+"""commented function"""
     # If total is 0, no coins are needed
     if total == 0:
         return 0
