@@ -6,18 +6,21 @@
 def makeChange(coins, total):
     """commented function"""
     # If total is 0, no coins are needed
-    if total < 0:
-        return -1
-    if total == 0:
+   
+    if total <= 0:
         return 0
 
-    # Create an array to store the minimum coins needed for each amount from 0 to total
-    dp = [float('inf')] * (total + 1)
-    dp[0] = 0  # Base case: no coins are needed for the total of 0
+    # init solutions array with "infinity" value
+    # index: amount, value:minimum number coins needed
+    solutions = [total + 1] * (total + 1)
+    solutions[0] = 0
 
-    # Iterate through each coin
-    for coin in coins:
-        for amount in range(coin, total + 1):
-            dp[amount] = min(dp[amount], dp[amount - coin] + 1)
+    # build solution bottom-up
+    for m in range(1, total + 1):
+        # try each coins
+        for c in coins:
+            if c <= m:
+                # update solution
+                solutions[m] = min(solutions[m], 1 + solutions[m - c])
 
-    return dp[total] if dp[total] != float('inf') else -1
+    return solutions[total] if solutions[total] <= total else - 1
