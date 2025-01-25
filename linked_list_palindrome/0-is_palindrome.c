@@ -1,89 +1,35 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include "lists.h"
 
 /**
- * is_palindrome - test if a linked list is a palindrome
- * @head: pointer to pointer of first node in linked list
- * Return: 0 if not, 1 if it is a palindrome
+ * is_palindrome - vérifie si une liste chaînée est un palindrome
+ * @head: pointeur vers le pointeur du premier noeud de la liste listint_t
+ * Return: 0 si ce n'est pas un palindrome, 1 si c'est un palindrome
  */
+
 int is_palindrome(listint_t **head)
 {
-	listint_t *slow = *head;
-	listint_t *fast = *head;
-	listint_t *stack = NULL;
+  listint_t *current; /* Pointeur vers le noeud actuel */
+  int i, j, len;
+  int arr[10]; /* Tableau pour stocker les valeurs de la liste */
 
-	if (*head == NULL || (*head)->next == NULL)
-	{
-		return (1);
-	}
+  if (*head == NULL) /* Si la liste est vide, c'est un palindrome */
+    return (1);
 
-	while (fast != NULL && fast->next != NULL)
-	{
-		push(&stack, slow->n);
-		slow = slow->next;
-		fast = fast->next->next;
-	}
+  current = *head; /* Initialisation du pointeur actuel */
+  len = 0; /* Initialisation de la longueur */
 
-	/* if linked list is odd */
-	if (fast != NULL)
-	{
+  while (current != NULL) /* Parcours de la liste pour stocker les valeurs dans le tableau */
+  {
+    arr[len] = current->n; /* Stocke la valeur du noeud actuel dans le tableau */
+    current = current->next; /* Passe au noeud suivant */
+    len++; /* Incrémente la longueur */
+  }
 
-		slow = slow->next;
-	}
+  for (i = 0, j = len - 1; i < len / 2; i++, j--) /* Parcours le tableau pour vérifier si c'est un palindrome */
+  {
+    if (arr[i] != arr[j]) /* Si les valeurs ne correspondent pas, ce n'est pas un palindrome */
+      return (0);
+  }
 
-	while (slow != NULL)
-	{
-		if (pop(&stack) != slow->n)
-		{
-			free(stack);
-			return (0);
-		}
-		slow = slow->next;
-	}
-	free(stack);
-	return (1);
+  return (1); /* Si toutes les valeurs correspondent, c'est un palindrome */
 }
-
-/**
- * push - pushes an element on top of stack
- * @stack: pointer to pointer to the top of the stack
- * @n: data to be pushed onto the stack
- */
-void push(listint_t **stack, int n)
-{
-	listint_t *new_node = malloc(sizeof(listint_t));
-
-	if (new_node == NULL)
-	{
-		exit(EXIT_FAILURE);
-	}
-
-	new_node->n = n;
-	new_node->next = *stack;
-	*stack = new_node;
-}
-/**
- * pop - pops an element from the top of the stack
- * @stack: pointer to pointer to the top of the stack
- * Return: data of the popped element
- */
-int pop(listint_t **stack)
-{
-listint_t *temp;
-int n;
-
-if (*stack == NULL)
-{
-exit(EXIT_FAILURE);
-}
-
-temp = *stack;
-n = temp->n;
-
-*stack = (*stack)->next;
-free(temp);
-
-return (n);
-}
-
