@@ -1,12 +1,22 @@
 #!/usr/bin/python3
 """
-    commented function
+    Change comes from within
 """
 
+
 def makeChange(coins, total):
-    """commented function"""
-    # If total is 0, no coins are needed
-   
+    """
+        determine the fewest number of coins needed to meet
+        a given amount total
+
+    :param coins: list of the values of the coins in your possession
+    :param total: given amount to meet
+
+    :return: fewest number of coins needed to meet total
+        if total == 0 or less, return 0
+        if total cannot be met by any number of coins you have, return -1
+    """
+
     if total <= 0:
         return 0
 
