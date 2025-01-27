@@ -1,63 +1,95 @@
 #!/usr/bin/python3
-"""
-    script to log parsing
-"""
+
+""" script qui lit l'entrée standard ligne par ligne et calcule des métriques """
+# Ceci est une docstring qui décrit ce que fait le script
 
 import sys
-import re
+
+# Importation du module sys pour accéder à l'entrée standard
 
 
-total_size = 0
-count_line = 0
-count_status_code = {'200': 0,
-                     '301': 0,
-                     '400': 0,
-                     '401': 0,
-                     '403': 0,
-                     '404': 0,
-                     '405': 0,
-                     '500': 0
-                     }
-# pattern of line
-pattern = (r'^((?:\d{1,3}\.){3}\d{1,3}|[\w.-]+)\s*-\s*\[(.*?)\]'
-           r' "GET /projects/\d+ HTTP/1\.1" \d+ \d+$')
+def printsts(dic, size):
+    """ Affiche les informations """
+    # Ceci est une fonction qui affiche les informations
+
+    print("Taille du fichier: {:d}".format(size))
+    # Affiche la taille du fichier
+
+    for i in sorted(dic.keys()):
+        # Parcourt les clés du dictionnaire dans l'ordre
+
+        if dic[i] != 0:
+            # Si la valeur associée à la clé n'est pas 0
+
+            print("{}: {:d}".format(i, dic[i]))
+            # Affiche la clé et la valeur
+
+
+sts = {
+    "200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
+    "404": 0, "405": 0, "500": 0
+}
+# Initialisation du dictionnaire avec les codes de statut HTTP comme clés
+
+count = 0
+# Initialisation du compteur
+
+size = 0
+# Initialisation de la taille
 
 try:
+    # Début du bloc try
+
     for line in sys.stdin:
+        # Parcourt chaque ligne de l'entrée standard
 
-        # check line
-        match = re.match(pattern, line)
-        if match:
-            count_line += 1
-            # split line
-            elements = line.split(" ")
-            # add size of total and determine status code
-            total_size += int(elements[-1])
-            status_code = elements[-2]
-            # increment count of status code
-            if status_code in count_status_code:
-                count_status_code[status_code] += 1
+        if count != 0 and count % 10 == 0:
+            # Si le compteur n'est pas 0 et est un multiple de 10
 
-            # print each 10 line
-            if count_line % 10 == 0:
-                print('File size: {}'.format(total_size))
-                # print in sorted order
-                for code, count_code in sorted(count_status_code.items()):
-                    if count_code != 0:
-                        print('{}: {}'.format(code, count_status_code[code]))
-                # reinitialized count line
-                count_line = 0
-        else:
-            elements = line.split(" ")
-            if len(elements) > 6:
-                total_size += int(elements[-1])
+            printsts(sts, size)
+            # Appelle la fonction printsts
+
+        stlist = line.split()
+        # Divise la ligne en une liste de mots
+
+        count += 1
+        # Incrémente le compteur
+
+        try:
+            # Début du bloc try interne
+
+            size += int(stlist[-1])
+            # Ajoute le dernier mot de la liste à la taille (après conversion en entier)
+
+        except:
+            # Si une exception est levée
+
+            pass
+            # Ignore l'exception
+
+        try:
+            # Début d'un autre bloc try interne
+
+            if stlist[-2] in sts:
+                # Si l'avant-dernier mot de la liste est une clé du dictionnaire
+
+                sts[stlist[-2]] += 1
+                # Incrémente la valeur associée à cette clé dans le dictionnaire
+
+        except:
+            # Si une exception est levée
+
+            pass
+            # Ignore l'exception
+
+    printsts(sts, size)
+    # Appelle la fonction printsts
 
 except KeyboardInterrupt:
-    pass
+    # Si une exception KeyboardInterrupt est levée (lorsque l'utilisateur appuie sur Ctrl+C)
 
-finally:
-    print('File size: {}'.format(total_size))
-    # print in sorted order
-    for code, count_code in sorted(count_status_code.items()):
-        if count_code != 0:
-            print('{}: {}'.format(code, count_status_code[code]))
+    printsts(sts, size)
+    # Appelle la fonction printsts
+
+    raise
+    # Relève l'exception pour terminer le script
