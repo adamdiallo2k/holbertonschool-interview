@@ -25,16 +25,18 @@ def main():
         for line in sys.stdin:
             line_count += 1
             try:
-                parts = line.split()
+                parts = line.strip().split(" ")
+                
+                # Ensure the line has enough parts
                 if len(parts) < 7:
                     continue
 
-                # Extract and parse values
+                # Extract file size and status code
                 file_size = int(parts[-1])
                 status_code = int(parts[-2])
 
+                # Update metrics
                 total_size += file_size
-
                 if status_code in status_count:
                     status_count[status_code] += 1
 
@@ -42,6 +44,7 @@ def main():
                 # Skip lines with invalid format
                 continue
 
+            # Print stats every 10 lines
             if line_count % 10 == 0:
                 print_stats(total_size, status_count)
 
