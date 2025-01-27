@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" script that reads stdin line by line and computes metrics """
+""" Script that reads stdin line by line and computes metrics """
 
 if __name__ == '__main__':
 
@@ -12,15 +12,16 @@ if __name__ == '__main__':
             if times:
                 print("{:s}: {:d}".format(statusCode, times))
 
-    statusCodes = {"200": 0,
-                   "301": 0,
-                   "400": 0,
-                   "401": 0,
-                   "403": 0,
-                   "404": 0,
-                   "405": 0,
-                   "500": 0
-                   }
+    statusCodes = {
+        "200": 0,
+        "301": 0,
+        "400": 0,
+        "401": 0,
+        "403": 0,
+        "404": 0,
+        "405": 0,
+        "500": 0
+    }
     fileSize = 0
     n_lines = 0
 
@@ -38,8 +39,9 @@ if __name__ == '__main__':
                 if statusCode in statusCodes:
                     statusCodes[statusCode] += 1
                 fileSize += int(data[-1])
-            except:
-                pass
+            except (IndexError, ValueError):
+                """ Handle parsing issues (e.g., invalid line format) """
+                continue
         print_results(statusCodes, fileSize)
     except KeyboardInterrupt:
         """ Keyboard interruption, print from the beginning """
