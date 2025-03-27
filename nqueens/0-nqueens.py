@@ -5,19 +5,19 @@ import sys
 def solve_nqueens(N):
     """
     Find all possible solutions to the N-Queens problem
-    
+
     Args:
         N (int): Size of the chessboard and number of queens
     """
     def is_safe(board, row, col):
         """
         Check if a queen can be placed on board[row][col]
-        
+
         Args:
             board (list): Current board state
             row (int): Row to check
             col (int): Column to check
-        
+
         Returns:
             bool: True if safe to place a queen, False otherwise
         """
@@ -41,12 +41,12 @@ def solve_nqueens(N):
     def solve(board, col, solutions):
         """
         Recursive backtracking function to solve N-Queens
-        
+
         Args:
             board (list): Current board state
             col (int): Current column being processed
             solutions (list): List to store valid solutions
-        
+
         Returns:
             bool: True if solution found, False otherwise
         """
