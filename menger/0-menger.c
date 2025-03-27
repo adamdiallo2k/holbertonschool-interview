@@ -3,7 +3,7 @@
 #include "menger.h"
 
 /**
- * is_sponge_filled - Determines if a specific position is filled in the Menger Sponge
+ * is_sponge_filled - Determines if a position is filled in Menger Sponge
  * @level: Current level of the Menger Sponge
  * @row: Current row position
  * @col: Current column position
