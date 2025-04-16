@@ -4,19 +4,13 @@ import requests
 
 def count_words(subreddit, word_list):
     """
-    Queries the Reddit API recursively for all hot articles in a given subreddit
-    and prints a sorted count of given keywords (case-insensitive), based on the
-    title text.
-
-    Args:
-        subreddit (str): The name of the subreddit.
-        word_list (list): List of keywords to count.
+    Query the Reddit API recursively for hot articles in a subreddit and
+    print a sorted count of keywords (case-insensitive) found in the titles.
     """
     if not word_list:
         return
 
-    # Create a mapping of lower-case words to their frequency in word_list.
-    # This ensures that duplicates (e.g., "java", "JavA") multiply the count.
+    # Map keywords to their frequency (after converting to lowercase).
     key_freq = {}
     for word in word_list:
         word_low = word.lower()
@@ -25,16 +19,15 @@ def count_words(subreddit, word_list):
         else:
             key_freq[word_low] = 1
 
-    # The counts dictionary will hold the accumulated count of each keyword.
+    # Counts dictionary for each keyword.
     counts = {word: 0 for word in key_freq}
 
     def recursive_count(after):
         """
-        Helper recursive function to fetch Reddit hot articles page-by-page.
+        Recursively fetch pages of hot articles using the 'after' token.
         """
         url = ("https://www.reddit.com/r/{}/hot.json"
                .format(subreddit))
-        # Use limit=100 (maximum allowed) and pass the after token.
         params = {'limit': 100, 'after': after}
         headers = {
             'User-Agent': 'python:0-count:v1.0 (by /u/yourusername)'
@@ -46,27 +39,22 @@ def count_words(subreddit, word_list):
 
         data = response.json().get("data", {})
         children = data.get("children", [])
-        # Process each post's title.
+        # Process each post title.
         for child in children:
             title = child.get("data", {}).get("title", "")
-            # Split the title by whitespace. Since we want an exact match,
-            # tokens with punctuation (e.g., 'java!') do not count.
             for token in title.split():
                 token_lower = token.lower()
                 if token_lower in counts:
-                    # Each occurrence gets weighted by the keyword frequency.
                     counts[token_lower] += key_freq[token_lower]
-        # Get the next page token.
         next_after = data.get("after", None)
         if next_after:
             recursive_count(next_after)
         else:
             return
 
-    # Start the recursive processing from the first page.
     recursive_count(None)
 
-    # Sort results: descending order by count, then ascending alphabetical.
+    # Sort by descending count, then alphabetically (ascending).
     sorted_counts = sorted(
         counts.items(), key=lambda item: (-item[1], item[0])
     )
