@@ -5,7 +5,8 @@ import requests
 def count_words(subreddit, word_list):
     """
     Queries the Reddit API recursively for all hot articles in a given subreddit
-    and prints a sorted count of given keywords (case-insensitive) based on the title text.
+    and prints a sorted count of given keywords (case-insensitive), based on the
+    title text.
 
     Args:
         subreddit (str): The name of the subreddit.
@@ -31,10 +32,13 @@ def count_words(subreddit, word_list):
         """
         Helper recursive function to fetch Reddit hot articles page-by-page.
         """
-        url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-        # Use limit=100 (maximum allowed) and pass the after token
+        url = ("https://www.reddit.com/r/{}/hot.json"
+               .format(subreddit))
+        # Use limit=100 (maximum allowed) and pass the after token.
         params = {'limit': 100, 'after': after}
-        headers = {'User-Agent': 'python:0-count:v1.0 (by /u/yourusername)'}
+        headers = {
+            'User-Agent': 'python:0-count:v1.0 (by /u/yourusername)'
+        }
         response = requests.get(url, headers=headers, params=params,
                                 allow_redirects=False)
         if response.status_code != 200:
@@ -45,8 +49,8 @@ def count_words(subreddit, word_list):
         # Process each post's title.
         for child in children:
             title = child.get("data", {}).get("title", "")
-            # Split the title by whitespace.
-            # Since we want an exact match, tokens with punctuation (e.g., 'java!') do not count.
+            # Split the title by whitespace. Since we want an exact match,
+            # tokens with punctuation (e.g., 'java!') do not count.
             for token in title.split():
                 token_lower = token.lower()
                 if token_lower in counts:
@@ -62,8 +66,10 @@ def count_words(subreddit, word_list):
     # Start the recursive processing from the first page.
     recursive_count(None)
 
-    # Sort results: descending order by count, then ascending alphabetical order.
-    sorted_counts = sorted(counts.items(), key=lambda item: (-item[1], item[0]))
+    # Sort results: descending order by count, then ascending alphabetical.
+    sorted_counts = sorted(
+        counts.items(), key=lambda item: (-item[1], item[0])
+    )
     for word, count in sorted_counts:
         if count:
             print("{}: {}".format(word, count))
